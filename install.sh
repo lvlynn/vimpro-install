@@ -170,7 +170,7 @@ function install_prepare_software_on_ubuntu()
 function begin_install_vimplus
 {
 
-    git clone https://gitee.com/lahnelin/vimpro.git
+    git clone https://gitee.com/lahnelin/vimpro.git ~/vimpro
     ln -s  vimpro/vim ~/.vim
     ln -s  vimpro/vimrc ~/.vimrc
     ln -s  vimpro/vimrc.plugins ~/.vimrc.plugins
