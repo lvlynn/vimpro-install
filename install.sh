@@ -65,9 +65,9 @@ function get_system_version()
             #centos
             version=`cat /etc/redhat-release | awk '{print $4}' | awk -F . '{printf "%s",$1}'`
             ;;
-        esac
-        echo $version
-    }
+    esac
+    echo $version
+}
 
 ######################################[vim源码 安装函数]###################################################
 function check_vim_version()
@@ -81,23 +81,28 @@ function check_vim_version()
 function compile_vim_common()
 {
     rm -rf ~/vim82
-    git clone https://gitee.com/chxuan/vim82.git ~/vim82
+    git clone https://gitee.com/lahnelin/vim82.git ~/vim82
     cd ~/vim82
     ./configure --with-features=huge \
         --enable-multibyte \
         --enable-rubyinterp \
         --enable-pythoninterp \
         --with-python-config-dir=/usr/lib/python2.7/config-x86_64-linux-gnu \
+        --enable-python3interp=yes \
+        --with-python3-config-dir=/usr/lib/python3.6/config-3.6m-x86_64-linux-gnu \
         --enable-perlinterp \
         --enable-luainterp \
+        --enable-tclinterp \
         --enable-gui=gtk2 \
         --enable-cscope \
         --prefix=/usr
-            make -j16
-            sudo make install
-            cd -
 
-        }
+    make -j16
+    sudo make install
+
+    rm -rf ~/vim82
+    cd -
+}
 
 # 在ubuntu上源代码安装vim
 function compile_vim_on_ubuntu()
@@ -119,15 +124,13 @@ function compile_vim_on_centos()
 {
     version=$(check_vim_version)
     [ $version -lt 8 ] && {
-        sudo yum install -y ruby ruby-devel lua lua-devel luajit \
-        luajit-devel ctags git python python-devel \
-        python34 python34-devel tcl-devel \
-        perl perl-devel perl-ExtUtils-ParseXS \
-        perl-ExtUtils-XSpp perl-ExtUtils-CBuilder \
-        perl-ExtUtils-Embed libX11-devel ncurses-devel
+        sudo yum install -y python3-devel  ncurses-devel \
+        perl-devel perl-ExtUtils-Embed \
+        ruby-devel \
+        lua-devel \
+        tcl-devel
 
     compile_vim_common
-
 }
 }
 ######################################[vim源码 安装函数 end]###################################################
@@ -139,9 +142,10 @@ function install_prepare_software_on_centos()
     version=$(get_system_version)
     if [ $version -ge 8 ];then
         sudo dnf install -y epel-release
-        sudo dnf install -y vim ctags automake gcc gcc-c++ kernel-devel make cmake python2 python2-devel python3-devel fontconfig ack git
+        sudo dnf install -y vim ctags automake gcc gcc-c++  make cmake python2  python2-devel python3  python3-devel fontconfig ack git
     else
-        sudo yum install -y ctags automake gcc gcc-c++ kernel-devel cmake python-devel python3-devel fontconfig ack git
+        #编译ycm用
+        sudo yum install -y ctags automake gcc gcc-c++ cmake python-devel python3 python3-devel fontconfig ack git
         compile_vim_on_centos
     fi
 }
