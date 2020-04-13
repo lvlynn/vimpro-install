@@ -24,13 +24,13 @@ function prepare_ask()
 #    if [[ $dl == "Y" ]] || [[ $dl == "y" ]]; then
 #        use_dl_tar_file=1
 #    fi
-    echo "---------------------------------分割线--------------------------------------"
+    echo -e  "\n\n"
 
     read  -p "请选择使用ycm的编译版本。默认使用python3 [2/3]" version
     if [ "$version" == "2" ]; then
         ycm_python_use=2
     fi
-
+    echo -e "\n"
 }
 
 # 备份原有的vim及配置
@@ -86,10 +86,10 @@ function compile_vim_common()
     ./configure --with-features=huge \
         --enable-multibyte \
         --enable-rubyinterp \
-        --enable-pythoninterp \
-        --with-python-config-dir=/usr/lib/python2.7/config-x86_64-linux-gnu \
+        --enable-pythoninterp=yes \
+        --with-python-config-dir=/usr/lib64/python2.7/config \
         --enable-python3interp=yes \
-        --with-python3-config-dir=/usr/lib/python3.6/config-3.6m-x86_64-linux-gnu \
+        --with-python3-config-dir=/usr/lib64/python3.6/config-3.6m-x86_64-linux-gnu \
         --enable-perlinterp \
         --enable-luainterp \
         --enable-tclinterp \
@@ -133,6 +133,17 @@ function compile_vim_on_centos()
     compile_vim_common
 }
 }
+
+#编译astyle
+function compile_atyle()
+{
+    git clone https://gitee.com/lahnelin/vimpro-astyle.git ~/vimpro-astyle
+    cd ~/vimpro-astyle/build/gcc
+    make -j4
+    make install
+    cd -
+    rm -rf ~/vimpro-astyle
+}
 ######################################[vim源码 安装函数 end]###################################################
 
 ######################################[安装必备软件]###################################################
@@ -147,6 +158,7 @@ function install_prepare_software_on_centos()
         #编译ycm用
         sudo yum install -y ctags automake gcc gcc-c++ cmake python-devel python3 python3-devel fontconfig ack git
         compile_vim_on_centos
+        compile_atyle
     fi
 }
 
@@ -168,6 +180,7 @@ function install_prepare_software_on_ubuntu()
         sudo apt-get install -y vim
     else
         compile_vim_on_ubuntu
+        compile_atyle
     fi
 }
 
