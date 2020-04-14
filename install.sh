@@ -1,8 +1,7 @@
 #!/bin/bash
 
-
 linux_system_type=0
-need_backup_vim=0
+need_backup_vim=1
 ycm_python_use=3
 use_dl_tar_file=0
 # 获取日期
@@ -16,7 +15,9 @@ function get_datetime()
 function prepare_ask()
 {
     read -n 1 -p "是否备份旧的vim配置? 默认备份 [Y/N] " ch
-    if [[ $ch == "Y" ]] || [[ $ch == "y" ]]; then
+    if [[ $ch == "N" ]] || [[ $ch == "n" ]]; then
+        need_backup_vim=0
+    else
         need_backup_vim=1
     fi
 
@@ -24,24 +25,24 @@ function prepare_ask()
 #    if [[ $dl == "Y" ]] || [[ $dl == "y" ]]; then
 #        use_dl_tar_file=1
 #    fi
-    echo -e  "\n\n"
+    echo -e  "\n"
 
     read  -p "请选择使用ycm的编译版本。默认使用python3 [2/3]" version
     if [ "$version" == "2" ]; then
         ycm_python_use=2
     fi
-    echo -e "\n"
+    echo -e "\n\n"
 }
 
 # 备份原有的vim及配置
 function backup_old_vim()
 {
-    [ "x$need_backup_vim" == 1 ] && {
+    [ "x$need_backup_vim" == "x1" ] && {
         echo "正在备份vim旧配置..."
-            mkdir ~/vim_bak > /dev/null
+            mkdir ./vim_bak > /dev/null
 
             time=$(get_datetime)
-            tar -zcPf ~/vim_bak/vim_$time.tgz  ~/.vim*
+            tar -zcPf ./vim_bak/vim_$time.tgz  ~/.vim*
             echo "备份vim旧配置完成!"
         }
     #删除旧配置
@@ -137,12 +138,16 @@ function compile_vim_on_centos()
 #编译astyle
 function compile_atyle()
 {
-    git clone https://gitee.com/lahnelin/vimpro-astyle.git ~/vimpro-astyle
-    cd ~/vimpro-astyle/build/gcc
-    make -j4
-    make install
-    cd -
-    rm -rf ~/vimpro-astyle
+    version=$(astyle --version | cut -d ' ' -f 4 | cut -d '.' -f 1 )
+
+    [ "x$version" == "x" ] || [ $version -lt 3 ] && {
+        git clone https://gitee.com/lahnelin/vimpro-astyle.git ~/vimpro-astyle
+            cd ~/vimpro-astyle/build/gcc
+            make -j4
+            make install
+            cd -
+            rm -rf ~/vimpro-astyle
+        }
 }
 ######################################[vim源码 安装函数 end]###################################################
 
@@ -184,21 +189,27 @@ function install_prepare_software_on_ubuntu()
     fi
 }
 
-function begin_install_vimplus
+#下载php格式工具
+function install_php-cs-fixer()
 {
-
-    git clone https://gitee.com/lahnelin/vimpro.git ~/vimpro
-    ln -s  vimpro/vim ~/.vim
-    ln -s  vimpro/vimrc ~/.vimrc
-    ln -s  vimpro/vimrc.plugins ~/.vimrc.plugins
-    ln -s  vimpro/vimrc.config ~/.vimrc.config
-    ln -s  vimpro/vimrc.own.config ~/.vimrc.own.config
-
-    install_ycm
-
+    ln -s /home/vimpro/vim/bin/php-cs-fixer /usr/local/bin/php-cs-fixer
 }
 
-# 在centos上安装vimplus
+function begin_install_vimpro
+{
+
+    git clone https://gitee.com/lahnelin/vimpro.git /home/vimpro
+    ln -s  /home/vimpro/vim ~/.vim
+    ln -s  /home/vimpro/vimrc ~/.vimrc
+    ln -s  /home/vimpro/vimrc.plugins ~/.vimrc.plugins
+    ln -s  /home/vimpro/vimrc.config ~/.vimrc.config
+    ln -s  /home/vimpro/vimrc.own.config ~/.vimrc.own.config
+
+    install_ycm
+    install_php-cs-fixer
+}
+
+# 在centos上安装vimpro
 function dispatch_linux_distro()
 {
     prepare_ask
@@ -214,7 +225,7 @@ function dispatch_linux_distro()
     esac
 
     backup_old_vim
-    begin_install_vimplus
+    begin_install_vimpro
 }
 ######################################centos end###################################################
 
@@ -227,15 +238,18 @@ function install_ycm()
     #    git clone https://gitee.com/lahnelin/YouCompleteMe-clang.git ~/.vim/plugged/YouCompleteMe
     #    /root/vimpro/vim/plugged/YouCompleteMe/third_party/ycmd/ycm_core.so
     #   /root/vimpro/vim/plugged/YouCompleteMe/third_party/ycmd/third_party/cregex/regex_3/_regex.so
-    cd ~/.vim/plugged/YouCompleteMe
-    if [[ $ycm_python_use == "2" ]]; then
-        echo "Compile ycm with python2."
-        python2.7 ./install.py --clang-completer
-    else
-        echo "Compile ycm with python3."
-        python3 ./install.py --clang-completer
-    fi
-    cd ~
+
+    [ ! -f /home/vimpro/vim/plugged/YouCompleteMe/third_party/ycmd/ycm_core.so ] && {
+        cd ~/.vim/plugged/YouCompleteMe
+            if [[ $ycm_python_use == "2" ]]; then
+                echo "Compile ycm with python2."
+                python2.7 ./install.py --clang-completer
+            else
+                echo "Compile ycm with python3."
+                python3 ./install.py --clang-completer
+            fi
+            cd -
+        }
 }
 ######################################[安装ycm自动补全插件 end]###################################################
 
@@ -273,8 +287,8 @@ function get_linux_distro()
 }
 
 
-# 在linux平上台安装vimplus
-function install_vimplus_on_linux()
+# 在linux平上台安装vimpro
+function install_vimpro_on_linux()
 {
     distro=`get_linux_distro`
     echo "Linux distro: "${distro}
@@ -308,14 +322,14 @@ function main()
     echo "Platform type: "${type}
 
     if [ ${type} == "Darwin" ]; then
-        install_vimplus_on_mac
+        install_vimpro_on_mac
     elif [ ${type} == "Linux" ]; then
         tp=$(uname -a)
         if [[ $tp =~ "Android" ]]; then
             echo "Android"
-            install_vimplus_on_android
+            install_vimpro_on_android
         else
-            install_vimplus_on_linux
+            install_vimpro_on_linux
         fi
     else
         echo "Not support platform type: "${type}
