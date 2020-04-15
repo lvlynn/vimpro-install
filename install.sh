@@ -207,7 +207,7 @@ function begin_install_vimpro
 
     install_ycm
     install_php-cs-fixer
-    mkidr ~/vim.swap
+    mkdir ~/vim.swap
 }
 
 # 在centos上安装vimpro
