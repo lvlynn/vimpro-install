@@ -250,7 +250,7 @@ function install_ycm()
     #    git clone https://gitee.com/lahnelin/YouCompleteMe-clang.git ~/.vim/plugged/YouCompleteMe
     #    /root/vimpro/vim/plugged/YouCompleteMe/third_party/ycmd/ycm_core.so
     #   /root/vimpro/vim/plugged/YouCompleteMe/third_party/ycmd/third_party/cregex/regex_3/_regex.so
-    extar_install_ycm
+    extra_install_ycm
 }
 ######################################[安装ycm自动补全插件 end]###################################################
 

@@ -82,7 +82,9 @@ path_have_go=`echo \$PATH | grep go\/root | wc -l`
     sed -i '/vim-go.sh/d' /etc/profile
     echo ". /etc/profile.d/vim-go.sh">> /etc/profile
 
+    source /etc/profile
     echo "--> go扩展安装成功"
+    cd -
 #    go env -w GOROOT=/home/vimpro/extra/go/root
 #    go env -w GOPATH=/home/vimpro/extra/go/path
 #    go env -w GOBIN=$GOROOT/bin
@@ -148,7 +150,7 @@ function extra_prepare_ask()
 }
 
 # 安装ycm插件
-function extar_install_ycm()
+function extra_install_ycm()
 {
 
     if [ $extra_func_all == 1 ]; then
