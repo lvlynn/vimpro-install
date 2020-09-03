@@ -1,17 +1,10 @@
 #!/bin/bash
-
-function check_vimpro()
-{
-    [ ! -f /home/vimpro/vimrc ] && {
-        echo "vimpro未安装，请使用root安装vimpro"
-            exit
-    }
-
-}
+source common.sh
 
 function re_ask()
 {
     #test_label
+    t_fl
     read  -p "请选择要安装的用户。默认为$USER。 " usr
 
     if [ "$usr" == "" ]; then
@@ -21,17 +14,18 @@ function re_ask()
     fi
 
     if [  "$U"  == "root" ]; then
-        install_path="/root"
+        install_path="/root"	
+	root_install_tips	
     else
 
         if [ ! -d "/home/$U" ]; then
-            echo  -e "/home/$U目录不存在，请重新选择!\n"
+            echo  -e -n  "/home/$U目录不存在，请重新选择!\n"
             re_ask
         fi
 
         install_path="/home/$U"
     fi
-    echo -e "\n"
+    echo -e  -n "\n"
 }
 
 function remove_old_config()

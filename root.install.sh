@@ -4,6 +4,9 @@ linux_system_type=0
 need_backup_vim=1
 ycm_python_use=3
 use_dl_tar_file=0
+
+source common.sh
+
 # 获取日期
 function get_datetime()
 {
@@ -14,7 +17,9 @@ function get_datetime()
 #配置前先询问
 function prepare_ask()
 {
-    read -n 1 -p "是否备份旧的vim配置? 默认备份 [Y/N] " ch
+    t_bl
+	echo "=======================安装前配置========================="
+    read -n 1 -p "-->是否备份旧的vim配置? 默认备份 [Y/N] " ch
     if [[ $ch == "N" ]] || [[ $ch == "n" ]]; then
         need_backup_vim=0
     else
@@ -25,28 +30,37 @@ function prepare_ask()
 #    if [[ $dl == "Y" ]] || [[ $dl == "y" ]]; then
 #        use_dl_tar_file=1
 #    fi
-    echo -e  "\n"
+    t_bl
 
-    read  -p "请选择使用ycm的编译版本。默认使用python3 [2/3]" version
+    read -n 1 -p "-->请选择使用ycm的编译版本。默认使用python3 [2/3]" version
     if [ "$version" == "2" ]; then
         ycm_python_use=2
     fi
-    echo -e "\n\n"
+    t_bl
+
+    read -n 1  -p "-->是否安装go语言自动补全及插件？默认不安装 [Y/N]" ch
+    if [[ $ch == "Y" ]] || [[ $ch == "y" ]]; then
+        extra_func_go=1
+    fi
+
+    t_fl
 }
 
 # 备份原有的vim及配置
 function backup_old_vim()
 {
     [ "x$need_backup_vim" == "x1" ] && {
-        echo "正在备份vim旧配置..."
+        echo "-->正在备份vim旧配置..."
             mkdir ./vim_bak > /dev/null
 
             time=$(get_datetime)
             tar -zcPf ./vim_bak/vim_$time.tgz  ~/.vim*
-            echo "备份vim旧配置完成!"
+            echo "-->备份vim旧配置完成，备份文件存在当前目录vim_bak下！"
         }
     #删除旧配置
     rm -rf ~/.vim*
+    t_bl
+    t_fl
 }
 
 
@@ -189,7 +203,7 @@ function install_prepare_software_on_ubuntu()
     fi
 }
 
-#下载php格式工具
+#下载php格式化工具
 function install_php-cs-fixer()
 {
     ln -s /home/vimpro/vim/bin/php-cs-fixer /usr/local/bin/php-cs-fixer
@@ -214,6 +228,8 @@ function begin_install_vimpro
 function dispatch_linux_distro()
 {
     prepare_ask
+
+	echo "====================正在检查软件环境======================"
     case $linux_system_type in
         1)
             #ubuntu
@@ -224,6 +240,7 @@ function dispatch_linux_distro()
             install_prepare_software_on_centos
             ;;
     esac
+    t_fl
 
     backup_old_vim
     begin_install_vimpro
@@ -250,7 +267,7 @@ function install_ycm()
                 python3 ./install.py --clang-completer
             fi
             cd -
-        }
+    }
 }
 ######################################[安装ycm自动补全插件 end]###################################################
 
@@ -317,6 +334,8 @@ function get_now_timestamp()
 # main函数
 function main()
 {
+    t_sl
+    t_bl
     begin=`get_now_timestamp`
 
     type=$(uname)
@@ -336,10 +355,14 @@ function main()
         echo "Not support platform type: "${type}
     fi
 
-end=`get_now_timestamp`
-second=`expr ${end} - ${begin}`
-min=`expr ${second} / 60`
-echo "It takes "${min}" minutes."
+    end=`get_now_timestamp`
+    second=`expr ${end} - ${begin}`
+    min=`expr ${second} / 60`
+
+    t_bl
+    t_fl
+    echo "It takes "${min}" minutes."
+    t_fl
 }
 
 main
