@@ -19,30 +19,21 @@ function prepare_ask()
 {
     t_bl
 	echo "=======================安装前配置========================="
-    read -n 1 -p "-->是否备份旧的vim配置? 默认备份 [Y/N] " ch
+    read -n 1 -p "-->是否备份旧的vim配置? 默认备份 [y/n] " ch
     if [[ $ch == "N" ]] || [[ $ch == "n" ]]; then
         need_backup_vim=0
     else
         need_backup_vim=1
     fi
 
-#    read  -p "是否使用编译好了的压缩包进行下载安装? 可加快下载速度和安装速度，但不一定兼容，若安装失败可以重新运行本脚本，并选择不使用 默认不使用 [Y/N] " dl
+#    read  -p "是否使用编译好了的压缩包进行下载安装? 可加快下载速度和安装速度，但不一定兼容，若安装失败可以重新运行本脚本，并选择不使用 默认不使用 [y/n] " dl
 #    if [[ $dl == "Y" ]] || [[ $dl == "y" ]]; then
 #        use_dl_tar_file=1
 #    fi
     t_bl
 
-    read -n 1 -p "-->请选择使用ycm的编译版本。默认使用python3 [2/3]" version
-    if [ "$version" == "2" ]; then
-        ycm_python_use=2
-    fi
+    extra_prepare_ask
     t_bl
-
-    read -n 1  -p "-->是否安装go语言自动补全及插件？默认不安装 [Y/N]" ch
-    if [[ $ch == "Y" ]] || [[ $ch == "y" ]]; then
-        extra_func_go=1
-    fi
-
     t_fl
 }
 
@@ -206,7 +197,9 @@ function install_prepare_software_on_ubuntu()
 #下载php格式化工具
 function install_php-cs-fixer()
 {
-    ln -s /home/vimpro/vim/bin/php-cs-fixer /usr/local/bin/php-cs-fixer
+    [ ! -f /usr/local/bin/php-cs-fixer ] && {
+        ln -s /home/vimpro/vim/bin/php-cs-fixer /usr/local/bin/php-cs-fixer
+    }
 }
 
 function begin_install_vimpro
@@ -221,7 +214,8 @@ function begin_install_vimpro
 
     install_ycm
     install_php-cs-fixer
-    mkdir ~/vim.swap
+
+    [ ! -f ~/vim.swap ] && mkdir ~/vim.swap
 }
 
 # 在centos上安装vimpro
@@ -256,18 +250,7 @@ function install_ycm()
     #    git clone https://gitee.com/lahnelin/YouCompleteMe-clang.git ~/.vim/plugged/YouCompleteMe
     #    /root/vimpro/vim/plugged/YouCompleteMe/third_party/ycmd/ycm_core.so
     #   /root/vimpro/vim/plugged/YouCompleteMe/third_party/ycmd/third_party/cregex/regex_3/_regex.so
-
-    [ ! -f /home/vimpro/vim/plugged/YouCompleteMe/third_party/ycmd/ycm_core.so ] && {
-        cd ~/.vim/plugged/YouCompleteMe
-            if [[ $ycm_python_use == "2" ]]; then
-                echo "Compile ycm with python2."
-                python2.7 ./install.py --clang-completer
-            else
-                echo "Compile ycm with python3."
-                python3 ./install.py --clang-completer
-            fi
-            cd -
-    }
+    extar_install_ycm
 }
 ######################################[安装ycm自动补全插件 end]###################################################
 
