@@ -2,7 +2,6 @@
 
 linux_system_type=0
 need_backup_vim=1
-ycm_python_use=3
 use_dl_tar_file=0
 
 source common.sh
@@ -89,13 +88,26 @@ function compile_vim_common()
     rm -rf ~/vim82
     git clone https://gitee.com/lahnelin/vim82.git ~/vim82
     cd ~/vim82
+
+
+    
+    if [[ $build_python_use == "2" ]]; then
+        pythoninterp=yes
+        python3interp=no
+    else
+        pythoninterp=no
+        python3interp=yes
+    fi
+#   py2_config=`python-config  --configdir`
+#   py3_config=`python3-config  --configdir`
+#   --with-python3-command=/usr/bin/python3
+#   vim8已经无需使用with-python3-config-dir。配置会自动找到
+#   最好不要使用编译python， python3
     ./configure --with-features=huge \
         --enable-multibyte \
         --enable-rubyinterp \
-        --enable-pythoninterp=yes \
-        --with-python-config-dir=/usr/lib64/python2.7/config \
-        --enable-python3interp=yes \
-        --with-python3-config-dir=/usr/lib64/python3.6/config-3.6m-x86_64-linux-gnu \
+        --enable-pythoninterp=$pythoninterp \
+        --enable-python3interp=$python3interp \
         --enable-perlinterp \
         --enable-luainterp \
         --enable-tclinterp \

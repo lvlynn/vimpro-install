@@ -107,7 +107,7 @@ extra_func_cs=0
 #是否安装rust语言插件的支持
 extra_func_rust=0
 
-ycm_python_use=3
+build_python_use=3
 
 #配置前先询问
 function extra_prepare_ask()
@@ -117,7 +117,7 @@ function extra_prepare_ask()
 
     read  -p "-->请选择使用ycm的编译版本。默认使用python3 [2/3]" version
     if [ "$version" == "2" ]; then
-        ycm_python_use=2
+        build_python_use=2
     fi
     t_bl
 
@@ -188,7 +188,7 @@ function extra_install_ycm()
     fi
 
     cd /home/vimpro/vim/plugged/YouCompleteMe
-    if [[ $ycm_python_use == "2" ]]; then
+    if [[ $build_python_use == "2" ]]; then
         echo "-->Compile ycm with python2."
         python2.7 ./install.py $install_args
     else
