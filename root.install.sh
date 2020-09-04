@@ -102,7 +102,7 @@ function compile_vim_common()
 #   py3_config=`python3-config  --configdir`
 #   --with-python3-command=/usr/bin/python3
 #   vim8已经无需使用with-python3-config-dir。配置会自动找到
-#   最好不要使用编译python， python3
+#   最好不要同时编译python， python3
     ./configure --with-features=huge \
         --enable-multibyte \
         --enable-rubyinterp \

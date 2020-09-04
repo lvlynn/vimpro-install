@@ -115,7 +115,7 @@ function extra_prepare_ask()
     t_bl
 	echo "=================YouCompleteMe配置==================="
 
-    read  -p "-->请选择使用ycm的编译版本。默认使用python3 [2/3]" version
+    read  -p "-->请选择python的编译版本。默认使用python3 [2/3]" version
     if [ "$version" == "2" ]; then
         build_python_use=2
     fi
