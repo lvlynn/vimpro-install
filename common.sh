@@ -69,18 +69,20 @@ function go_install()
     sed -i "s#\"Plug 'fatih/vim-go'#Plug 'fatih/vim-go'#" /home/vimpro/vimrc.plugins
 
     #设置环境变量
-    echo "#!/bin/bash
-    
-export GOROOT=/home/vimpro/extra/go/root
-export GOPATH=/home/vimpro/extra/go/path
-export GOBIN=\$GOROOT/bin
-    
-path_have_go=`echo \$PATH | grep go\/root | wc -l`
-[ \$path_have_go == 0 ] && 
-    export PATH=\$PATH:\$GOBIN" > /etc/profile.d/vim-go.sh
+    [ ! -f /etc/profile.d/vim-env.sh ] && touch /etc/profile.d/vim-env.sh
+    sed -i '/#!\/bin\/bash/d' /etc/profile.d/vim-env.sh
+    sed -i  '1i\\#\!\/bin\/bash' /etc/profile.d/vim-env.sh
 
-    sed -i '/vim-go.sh/d' /etc/profile
-    echo ". /etc/profile.d/vim-go.sh">> /etc/profile
+    sed -i '/#GOENV/d' /etc/profile.d/vim-env.sh
+    sed -i  '$a\##########################GOENV#############################' /etc/profile.d/vim-env.sh
+    sed -i  '$a\export GOROOT=/home/vimpro/extra/go/root              #GOENV' /etc/profile.d/vim-env.sh
+    sed -i  '$a\export GOPATH=/home/vimpro/extra/go/path              #GOENV' /etc/profile.d/vim-env.sh
+    sed -i  '$a\export GOBIN=\$GOROOT/bin                              #GOENV' /etc/profile.d/vim-env.sh
+    sed -i  '$a\path_have_go=\`echo \$PATH | grep go\/root | wc -l`      #GOENV' /etc/profile.d/vim-env.sh
+    sed -i  '$a\     export PATH=\$PATH:\$GOBIN                         #GOENV' /etc/profile.d/vim-env.sh
+
+    sed -i '/vim-env.sh/d' /etc/profile
+    echo ". /etc/profile.d/vim-env.sh">> /etc/profile
 
     source /etc/profile
     echo "--> go扩展安装成功"
@@ -91,6 +93,43 @@ path_have_go=`echo \$PATH | grep go\/root | wc -l`
     t_fl
     t_bl
 }   
+
+function js_install()
+{
+    check_vimpro
+
+	echo "===================正在安装go扩展========================="
+    cd /home/vimpro
+    git submodule init extra/node
+    git submodule update
+
+    [ !  -f /home/vimpro/extra/node/bin/node ] && { 
+        echo "--> [node]js扩展下载失败，请稍后重试"
+        return
+    }
+
+    #设置环境变量
+    [ ! -f /etc/profile.d/vim-env.sh ] && touch /etc/profile.d/vim-env.sh
+    sed -i '/#!\/bin\/bash/d' /etc/profile.d/vim-env.sh
+    sed -i  '1i\\#\!\/bin\/bash' /etc/profile.d/vim-env.sh
+
+    sed -i '/#NODEENV/d' /etc/profile.d/vim-env.sh
+    sed -i  '$a\############################NODEENV#############################' /etc/profile.d/vim-env.sh
+    sed -i  '$a\export NODEBIN=/home/vimpro/extra/node/bin              #NODEENV' /etc/profile.d/vim-env.sh
+    sed -i  '$a\path_have_node=\`echo \$PATH | grep node\/bin | wc -l`     #NODEENV' /etc/profile.d/vim-env.sh
+    sed -i  '$a\[ $path_have_node == 0 ] &&                             #NODEENV' /etc/profile.d/vim-env.sh
+    sed -i  '$a\     export PATH=\$PATH:\$NODEBIN                         #NODEENV' /etc/profile.d/vim-env.sh
+
+
+    sed -i '/vim-env.sh/d' /etc/profile
+    echo ". /etc/profile.d/vim-env.sh">> /etc/profile
+
+    t_fl
+    t_bl
+}   
+
+
+
 
 #==========================extra function===========================================
 #是否安装全部语言插件的支持
@@ -166,14 +205,6 @@ function extra_install_ycm()
         [ $extra_func_rust == 1 ] && install_args="$install_args --rust-completer"
 
 
-        if [ $extra_func_js == 1 ]; then
-            version=`npm --version | wc -l ` 
-            [ $version == 0 ] && {
-                echo "启用js自动补全需安装npm，请安装后重试！"
-            }
-
-        fi
-
         echo "-->当前编译选项如下："
         echo "$install_args"
 
@@ -186,6 +217,12 @@ function extra_install_ycm()
     if [ $extra_func_all == 1 -o $extra_func_go == 1 ]; then
         go_install
     fi
+
+    if [ $extra_func_all == 1 -o $extra_func_js == 1 ]; then
+        js_install
+    fi
+
+
 
     cd /home/vimpro/vim/plugged/YouCompleteMe
     if [[ $build_python_use == "2" ]]; then
