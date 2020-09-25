@@ -363,9 +363,7 @@ function main()
     t_bl
     t_fl
     echo "It takes "${min}" minutes."
-    if [ $extra_func_all == 1 -o $extra_func_js == 1 -o $extra_func_go ]; then
-        echo "请执行[ source /etc/profile ] 来启用go和node命令"
-    fi
+    tips_run_source
     t_fl
 }
 

@@ -69,7 +69,9 @@ function go_install()
     sed -i "s#\"Plug 'fatih/vim-go'#Plug 'fatih/vim-go'#" /home/vimpro/vimrc.plugins
 
     #设置环境变量
-    [ ! -f /etc/profile.d/vim-env.sh ] && touch /etc/profile.d/vim-env.sh
+    [ ! -f /etc/profile.d/vim-env.sh ] && echo "" > /etc/profile.d/vim-env.sh
+
+    #sed 对空文件无效
     sed -i '/#!\/bin\/bash/d' /etc/profile.d/vim-env.sh
     sed -i  '1i\\#\!\/bin\/bash' /etc/profile.d/vim-env.sh
 
@@ -111,7 +113,8 @@ function js_install()
     apt-get -y remove nodejs
 
     #设置环境变量
-    [ ! -f /etc/profile.d/vim-env.sh ] && touch /etc/profile.d/vim-env.sh
+    [ ! -f /etc/profile.d/vim-env.sh ] && echo "" > /etc/profile.d/vim-env.sh
+
     sed -i '/#!\/bin\/bash/d' /etc/profile.d/vim-env.sh
     sed -i  '1i\\#\!\/bin\/bash' /etc/profile.d/vim-env.sh
 
@@ -133,7 +136,11 @@ function js_install()
     t_bl
 }   
 
-
+function tips_run_source(){
+    if [ $extra_func_all == 1 -o $extra_func_js == 1 -o $extra_func_go ]; then
+        echo "请执行[ source /etc/profile ] 来启用go和node命令"
+    fi
+}
 
 
 #==========================extra function===========================================
@@ -226,8 +233,10 @@ function extra_install_ycm()
     if [ $extra_func_all == 1 -o $extra_func_js == 1 ]; then
         js_install
     fi
-
-
+    
+    echo $PATH
+    source  /etc/profile
+    echo $PATH
 
     cd /home/vimpro/vim/plugged/YouCompleteMe
     if [[ $build_python_use == "2" ]]; then
