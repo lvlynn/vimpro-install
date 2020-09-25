@@ -41,7 +41,7 @@ function install_new_config()
     ln -s  /home/vimpro/vimrc $install_path/.vimrc
     ln -s  /home/vimpro/vimrc.plugins $install_path/.vimrc.plugins
     ln -s  /home/vimpro/vimrc.config $install_path/.vimrc.config
-    cp  /home/vimpro/vimrc.own.config $install_path/.vimrc.own.config
+    cp -f  /home/vimpro/vimrc.own.config $install_path/.vimrc.own.config
     mkdir $install_path/vim.swap
 }
 

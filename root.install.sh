@@ -228,7 +228,7 @@ function begin_install_vimpro
     ln -s  /home/vimpro/vimrc ~/.vimrc
     ln -s  /home/vimpro/vimrc.plugins ~/.vimrc.plugins
     ln -s  /home/vimpro/vimrc.config ~/.vimrc.config
-    ln -s  /home/vimpro/vimrc.own.config ~/.vimrc.own.config
+    cp -f  /home/vimpro/vimrc.own.config ~/.vimrc.own.config
 
     install_ycm
     install_php-cs-fixer
