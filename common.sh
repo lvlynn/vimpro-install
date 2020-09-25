@@ -108,6 +108,9 @@ function js_install()
         return
     }
 
+    yum -y remove nodejs
+    apt-get -y remove nodejs
+
     #设置环境变量
     [ ! -f /etc/profile.d/vim-env.sh ] && touch /etc/profile.d/vim-env.sh
     sed -i '/#!\/bin\/bash/d' /etc/profile.d/vim-env.sh

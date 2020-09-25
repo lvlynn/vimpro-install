@@ -216,8 +216,14 @@ function install_php-cs-fixer()
 
 function begin_install_vimpro
 {
-
-    git clone https://gitee.com/lahnelin/vimpro.git /home/vimpro
+    if [ ! -f /home/vimpro ]; then
+        git clone https://gitee.com/lahnelin/vimpro.git /home/vimpro
+    else
+        cd /home/vimpro
+        git pull
+        cd -
+    fi
+    
     ln -s  /home/vimpro/vim ~/.vim
     ln -s  /home/vimpro/vimrc ~/.vimrc
     ln -s  /home/vimpro/vimrc.plugins ~/.vimrc.plugins
