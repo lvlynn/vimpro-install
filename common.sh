@@ -84,7 +84,6 @@ function go_install()
     sed -i '/vim-env.sh/d' /etc/profile
     echo ". /etc/profile.d/vim-env.sh">> /etc/profile
 
-    source /etc/profile
     echo "--> go扩展安装成功"
     cd -
 #    go env -w GOROOT=/home/vimpro/extra/go/root
@@ -98,7 +97,7 @@ function js_install()
 {
     check_vimpro
 
-	echo "===================正在安装go扩展========================="
+    echo "===================正在安装node( js,css,html )扩展========================="
     cd /home/vimpro
     git submodule init extra/node
     git submodule update
@@ -126,6 +125,9 @@ function js_install()
 
     sed -i '/vim-env.sh/d' /etc/profile
     echo ". /etc/profile.d/vim-env.sh">> /etc/profile
+
+    echo "--> node扩展安装成功"
+    echo -
 
     t_fl
     t_bl
