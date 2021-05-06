@@ -86,7 +86,7 @@ function check_vim_version()
 function compile_vim_common()
 {
     rm -rf ~/vim82
-    git clone https://gitee.com/lahnelin/vim82.git ~/vim82
+    git clone https://gitee.com/lvlynn/vim82.git ~/vim82
     cd ~/vim82
 
 
@@ -158,7 +158,7 @@ function compile_atyle()
     version=$(astyle --version | cut -d ' ' -f 4 | cut -d '.' -f 1 )
 
     [ "x$version" == "x" ] || [ $version -lt 3 ] && {
-        git clone https://gitee.com/lahnelin/vimpro-astyle.git ~/vimpro-astyle
+        git clone https://gitee.com/lvlynn/vimpro-astyle.git ~/vimpro-astyle
             cd ~/vimpro-astyle/build/gcc
             make -j4
             make install
@@ -217,7 +217,7 @@ function install_php-cs-fixer()
 function begin_install_vimpro
 {
     if [ ! -d /home/vimpro ]; then
-        git clone https://gitee.com/lahnelin/vimpro.git /home/vimpro
+        git clone https://gitee.com/lvlynn/vimpro.git /home/vimpro
     else
         cd /home/vimpro
         git pull
@@ -265,7 +265,7 @@ function dispatch_linux_distro()
 # 安装ycm插件
 function install_ycm()
 {
-    #    git clone https://gitee.com/lahnelin/YouCompleteMe-clang.git ~/.vim/plugged/YouCompleteMe
+    #    git clone https://gitee.com/lvlynn/YouCompleteMe-clang.git ~/.vim/plugged/YouCompleteMe
     #    /root/vimpro/vim/plugged/YouCompleteMe/third_party/ycmd/ycm_core.so
     #   /root/vimpro/vim/plugged/YouCompleteMe/third_party/ycmd/third_party/cregex/regex_3/_regex.so
     extra_install_ycm
