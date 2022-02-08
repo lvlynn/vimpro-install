@@ -1,0 +1,15 @@
+
+这是一个用在centos ubuntu 系统的vim 扩展套件一键安装脚本。
+
+1. 扩展套件支持
+c/c++
+php
+html/javascript
+golang
+等语言的自动提示、格式化等功能
+
+2. 支持语言高亮，主题
+
+3. 支持自定义 diy配置
+
+首次安装请使用 root.install.sh 后续增加用户可以直接使用user.install.sh
